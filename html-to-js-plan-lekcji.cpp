@@ -53,101 +53,64 @@ int main(){
                             poz2 = tekst.find("<",3);
                             poz++;
                             gr2 = 0; //wyzerowanie, czy 2. grupa ma teraz lekcje?
-                            switch(ke){
-                                case 0:
-                                    tab[kk][kg].NrL.assign(tekst.substr(poz,poz2-poz));
-                                    cout<<tab[kk][kg].NrL<<"\n";
-                                    break;
-                                case 1:
-                                    tab[kk][kg].godz.assign(tekst.substr(poz,(poz2-poz)));
-                                    cout<<tab[kk][kg].godz<<"\n";
-                                    break;
-                                case 2:
-                                    if(tekst[poz]=='&'){
-                                        tab[kk][kg].pn.assign("");
+                            if(ke==0){ //Nr. lekcji
+                                tab[kk][kg].NrL.assign(tekst.substr(poz,poz2-poz));
+                                cout<<tab[kk][kg].NrL<<"\n";
+                            }
+                            else if(ke==1){ //godziny trwania lekcji
+                                tab[kk][kg].godz.assign(tekst.substr(poz,(poz2-poz)));
+                                cout<<tab[kk][kg].godz<<"\n";
+                            }
+                            else{ //ktorys z dni tygodnia
+                                if(tekst[poz]=='&'){
+                                    switch(ke){
+                                        case 2:
+                                            tab[kk][kg].pn.assign("");
+                                            break;
+                                        case 3:
+                                            tab[kk][kg].wt.assign("");
+                                            break;
+                                        case 4:
+                                            tab[kk][kg].sr.assign("");
+                                            break;
+                                        case 5:
+                                            tab[kk][kg].cz.assign("");
+                                            break;
+                                        case 6:
+                                            tab[kk][kg].pt.assign("");
+                                            break;
                                     }
-                                    else{
-                                        for(i=0;i<5;i++){
-                                            poz2++;
-                                            poz2 = tekst.find(">",poz2);
-                                        }
-                                        poz = poz2+1;
-                                        poz2 = tekst.find("<",poz2);
-                                        tab[kk][kg].pn.assign(tekst.substr(poz,(poz2-poz)));
+                                    cout<<"\n";
+                                }
+                                else{
+                                    poz = tekst.find("\"s\"",poz2);
+                                    poz +=4;
+                                    poz2 = tekst.find("<",poz);
+                                    switch(ke){
+                                        case 2:
+                                            tab[kk][kg].pn.assign(tekst.substr(poz,(poz2-poz)));
+                                            break;
+                                        case 3:
+                                            tab[kk][kg].wt.assign(tekst.substr(poz,(poz2-poz)));
+                                            break;
+                                        case 4:
+                                            tab[kk][kg].sr.assign(tekst.substr(poz,(poz2-poz)));
+                                            break;
+                                        case 5:
+                                            tab[kk][kg].cz.assign(tekst.substr(poz,(poz2-poz)));
+                                            break;
+                                        case 6:
+                                            tab[kk][kg].pt.assign(tekst.substr(poz,(poz2-poz)));
+                                            break;
                                     }
-                                    cout<<tab[kk][kg].pn<<"\n";
-                                    break;
-                                case 3:
-                                    if(tekst[poz]=='&'){
-                                        tab[kk][kg].wt.assign("");
-                                    }
-                                    else{
-                                        for(i=0;i<5;i++){
-                                            poz2++;
-                                            poz2 = tekst.find(">",poz2);
-                                        }
-                                        poz = poz2+1;
-                                        poz2 = tekst.find("<",poz2);
-                                        tab[kk][kg].wt.assign(tekst.substr(poz,(poz2-poz)));
-                                    }
-                                    cout<<tab[kk][kg].wt<<"\n";
-                                    break;
-                                case 4:
-                                    if(tekst[poz]=='&'){
-                                        tab[kk][kg].sr.assign("");
-                                    }
-                                    else{
-                                        for(i=0;i<5;i++){
-                                            poz2++;
-                                            poz2 = tekst.find(">",poz2);
-                                        }
-                                        poz = poz2+1;
-                                        poz2 = tekst.find("<",poz2);
-                                        tab[kk][kg].sr.assign(tekst.substr(poz,(poz2-poz)));
-                                    }
-                                    cout<<tab[kk][kg].sr<<"\n";
-                                    break;
-                                case 5:
-                                    if(tekst[poz]=='&'){
-                                        tab[kk][kg].cz.assign("");
-                                    }
-                                    else{
-                                        for(i=0;i<5;i++){
-                                            poz2++;
-                                            poz2 = tekst.find(">",poz2);
-                                        }
-                                        poz = poz2+1;
-                                        poz2 = tekst.find("<",poz2);
-                                        tab[kk][kg].cz.assign(tekst.substr(poz,(poz2-poz)));
-                                    }
-                                    cout<<tab[kk][kg].cz<<"\n";
-                                    break;
-                                case 6:
-                                    if(tekst[poz]=='&'){
-                                        tab[kk][kg].pt.assign("");
-                                    }
-                                    else{
-                                        for(i=0;i<5;i++){
-                                            poz2++;
-                                            poz2 = tekst.find(">",poz2);
-                                        }
-                                        poz = poz2+1;
-                                        poz2 = tekst.find("<",poz2);
-                                        tab[kk][kg].pt.assign(tekst.substr(poz,(poz2-poz)));
-                                    }
-                                    cout<<tab[kk][kg].pt<<"\n\n";
-                                    break;
+                                    cout<<(tekst.substr(poz,(poz2-poz)))<<"\n";
+                                }
                             }
                             if(ke>1){
-                                poz2 = tekst.find("<br>",poz2);
+                                poz2 = tekst.find("\"s\"",poz2);
                                 if(poz2 != string::npos){
                                     gr2 = 1;
-                                    poz2+=5;
-                                    for(i=0;i<6;i++){
-                                            poz2++;
-                                            poz2 = tekst.find(">",poz2);
-                                        }
-                                        poz = poz2+1;
+                                        poz = poz2+4;
                                         poz2 = tekst.find("<",poz2);
                                         switch(ke){
                                             case 2:
