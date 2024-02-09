@@ -14,15 +14,15 @@ int main(){
     cout<<"Program wymyslony i napisany przez Agate Majewska\n uczennice Zespolu Szkol Elektroniczno-Informatycznych im. Jana Szczepanika Lodz\n";
     cout<<"Pierwsza wersja programu 9.02.2024\n\n";
     //ZMIENNE
-    int liczba_klas,lg; //liczba_klas = liczba klas w szkole, lg = najwieksza liczba godzin lekcyjnych
-    int t=1,i=1,kk=1,kg,ke,poz,poz2; //kk = ktora klasa, kg = ktora godzina, ke = ktory element (dzien itp.)
+    int liczba_klas,lg,lk; //liczba_klas = liczba klas w szkole, lg = najwieksza liczba godzin lekcyjnych
+    int j,i,kk=1,kg,ke,poz,poz2; //kk = ktora klasa, kg = ktora godzina, ke = ktory element (dzien itp.)
     string tekst,nazwap="o1.html",pom; //tekst = obecnie rozpatrywana linijka tekstu, nazwap = nazwa pliku ktory jest aktualnie rozpatrywany, pom = zmienna pomocnicza
     bool nowy=1,gr2=0;    //nowy = czy to pierwsze przejscie programu po uruchomieniu nowego pliku, gr2 = czy o danej godzinie ma lekcje 2. grupa
     //*string dt; //dzien tygodnia
     //PROGRAM
     //przypisanie wartosci zmiennym
-    liczba_klas = 14;
-    lg = 12;
+    liczba_klas = 26;
+    lg = 14;
     //cout<<"Ile planow lekcji chcesz zaladowac do programu?\n";
     //cin>>liczba_klas;
     //cout<<"Jaki numer ma najpozniejsza lekcja (jezeli jest lekcja 0 to dolicz jedna godzine)?\n";
@@ -42,6 +42,7 @@ int main(){
         //ODCZYTYWANIE DANYCH Z PLIKU
         if(plik.good()){
             cout<<"Uzyskano dostep do pliku o"<<kk<<".html\n";
+            cout<<"Nr.L:\tGodziny\t\tPn\tWt\tSr\tCz\tPt\n";
             while(!plik.eof()){
                 getline(plik, tekst);
                 if(tekst.length()>3){
@@ -55,11 +56,11 @@ int main(){
                             gr2 = 0; //wyzerowanie, czy 2. grupa ma teraz lekcje?
                             if(ke==0){ //Nr. lekcji
                                 tab[kk][kg].NrL.assign(tekst.substr(poz,poz2-poz));
-                                cout<<tab[kk][kg].NrL<<"\n";
+                                cout<<tab[kk][kg].NrL<<"\t";
                             }
                             else if(ke==1){ //godziny trwania lekcji
                                 tab[kk][kg].godz.assign(tekst.substr(poz,(poz2-poz)));
-                                cout<<tab[kk][kg].godz<<"\n";
+                                cout<<tab[kk][kg].godz<<" ";
                             }
                             else{ //ktorys z dni tygodnia
                                 if(tekst[poz]=='&'){
@@ -80,7 +81,7 @@ int main(){
                                             tab[kk][kg].pt.assign("");
                                             break;
                                     }
-                                    cout<<"\n";
+                                    cout<<"\t";
                                 }
                                 else{
                                     poz = tekst.find("\"s\"",poz2);
@@ -103,7 +104,7 @@ int main(){
                                             tab[kk][kg].pt.assign(tekst.substr(poz,(poz2-poz)));
                                             break;
                                     }
-                                    cout<<(tekst.substr(poz,(poz2-poz)))<<"\n";
+                                    cout<<"\t"<<(tekst.substr(poz,(poz2-poz)));
                                 }
                             }
                             if(ke>1){
@@ -129,13 +130,33 @@ int main(){
                                                tab[kk][kg].pt2.assign(tekst.substr(poz,(poz2-poz)));
                                                break;
                                         }
-                                        cout<<tekst.substr(poz,(poz2-poz))<<"\n";
+                                        cout<<","<<tekst.substr(poz,(poz2-poz));
+                                }
+                                else{
+                                    switch(ke){
+                                        case 2:
+                                            tab[kk][kg].pn2.assign("");
+                                            break;
+                                        case 3:
+                                            tab[kk][kg].wt2.assign("");
+                                            break;
+                                        case 4:
+                                            tab[kk][kg].sr2.assign("");
+                                            break;
+                                        case 5:
+                                            tab[kk][kg].cz2.assign("");
+                                            break;
+                                        case 6:
+                                            tab[kk][kg].pt2.assign("");
+                                            break;
+                                    }
                                 }
                             }
                             ke++;
                             if(ke>6){
                                 ke=0;
                                 kg++;
+                                cout<<"\n";
                             }
                         }
                         else{
@@ -151,6 +172,46 @@ int main(){
         }
     kk++;
     plik.close(); //zamkniecie pliku
+    }
+
+    //EKSPORT DO JS
+    nazwap = "plany.js";
+    plik.open(nazwap,ios::out);
+    lk=liczba_klas;
+    if(plik.good()){
+        //utworzenie zmiennych w JS
+        plik<<"const lk="<<lk<<",lg="<<lg<<",ld=10;\n";
+        plik<<"let i,j;\n";
+        //deklaracja tablicy w JS
+        plik<<"let tab = [];\n";
+        plik<<"for(i=0;i<=lk;i++){\n";
+        plik<<"\ttab[i] = [];\n";
+        plik<<"\tfor(j=0;j<lg;j++){\n";
+        plik<<"\t\ttab[i][j] = [];\n";
+        plik<<"\t}\n";
+        plik<<"}\n";
+        //uzupelnienie tablicy w JS
+        for(i=1;i<=lk;i++){
+            plik<<"//oddzial "<<i<<"\n";
+            for(j=0;j<lg;j++){
+                plik<<"//"<<tab[i][j].NrL<<" "<<tab[i][j].godz<<"\n";
+                plik<<"tab["<<i<<"]["<<j<<"][0] = \""<<tab[i][j].pn<<"\";\n";
+                plik<<"tab["<<i<<"]["<<j<<"][1] = \""<<tab[i][j].wt<<"\";\n";
+                plik<<"tab["<<i<<"]["<<j<<"][2] = \""<<tab[i][j].sr<<"\";\n";
+                plik<<"tab["<<i<<"]["<<j<<"][3] = \""<<tab[i][j].cz<<"\";\n";
+                plik<<"tab["<<i<<"]["<<j<<"][4] = \""<<tab[i][j].pt<<"\";\n";
+                plik<<"tab["<<i<<"]["<<j<<"][5] = \""<<tab[i][j].pn2<<"\";\n";
+                plik<<"tab["<<i<<"]["<<j<<"][6] = \""<<tab[i][j].wt2<<"\";\n";
+                plik<<"tab["<<i<<"]["<<j<<"][7] = \""<<tab[i][j].sr2<<"\";\n";
+                plik<<"tab["<<i<<"]["<<j<<"][8] = \""<<tab[i][j].cz2<<"\";\n";
+                plik<<"tab["<<i<<"]["<<j<<"][9] = \""<<tab[i][j].pt2<<"\";\n";
+            }
+            plik<<"\n";
+        }
+        plik.close();
+    }
+    else{
+        cout<<"Nie udalo sie otworzyc / utworzyc pliku "<<nazwap<<"\n";
     }
 return 0;
 }
