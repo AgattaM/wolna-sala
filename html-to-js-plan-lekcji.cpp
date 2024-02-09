@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
+#include <algorithm>
 using namespace std;
 class godzina{
     public:
@@ -15,10 +17,11 @@ int main(){
     cout<<"Pierwsza wersja programu 9.02.2024\n\n";
     //ZMIENNE
     int liczba_klas,lg,lk; //liczba_klas = liczba klas w szkole, lg = najwieksza liczba godzin lekcyjnych
-    int j,i,kk=1,kg,ke,poz,poz2; //kk = ktora klasa, kg = ktora godzina, ke = ktory element (dzien itp.)
+    int j,i,vec,kk=1,kg,ke,poz,poz2; //kk = ktora klasa, kg = ktora godzina, ke = ktory element (dzien itp.), vec = takie i tylko do vectora
     string tekst,nazwap="o1.html",pom; //tekst = obecnie rozpatrywana linijka tekstu, nazwap = nazwa pliku ktory jest aktualnie rozpatrywany, pom = zmienna pomocnicza
-    bool nowy=1,gr2=0;    //nowy = czy to pierwsze przejscie programu po uruchomieniu nowego pliku, gr2 = czy o danej godzinie ma lekcje 2. grupa
+    bool nowy=1,gr2=0,byl;    //nowy = czy to pierwsze przejscie programu po uruchomieniu nowego pliku, gr2 = czy o danej godzinie ma lekcje 2. grupa, byl = czy dany element jest juz w wectorze sale
     //*string dt; //dzien tygodnia
+    vector <string> sale;
     //PROGRAM
     //przypisanie wartosci zmiennym
     liczba_klas = 26;
@@ -105,6 +108,18 @@ int main(){
                                             break;
                                     }
                                     cout<<"\t"<<(tekst.substr(poz,(poz2-poz)));
+                                    //uzupelnianie vectora sala o sale, ktore wczesniej sie nie pojawily
+                                    byl=0;
+                                    pom.assign(tekst.substr(poz,(poz2-poz)));
+                                    for(vec=0;vec<sale.size();vec++){
+                                        if(pom == sale[vec]){
+                                            byl=1;
+                                            break;
+                                        }
+                                    }
+                                    if(!byl){
+                                        sale.push_back(pom);
+                                    }
                                 }
                             }
                             if(ke>1){
@@ -131,6 +146,18 @@ int main(){
                                                break;
                                         }
                                         cout<<","<<tekst.substr(poz,(poz2-poz));
+                                        //uzupelnianie vectora sala o sale, ktore wczesniej sie nie pojawily
+                                        byl=0;
+                                        pom.assign(tekst.substr(poz,(poz2-poz)));
+                                        for(vec=0;vec<sale.size();vec++){
+                                            if(pom == sale[vec]){
+                                                byl=1;
+                                                break;
+                                            }
+                                        }
+                                        if(!byl){
+                                            sale.push_back(pom);
+                                        }
                                 }
                                 else{
                                     switch(ke){
@@ -174,14 +201,23 @@ int main(){
     plik.close(); //zamkniecie pliku
     }
 
+    //wyswietlenie sal
+    sort(sale.begin(),sale.end());
+    cout<<"\nWszystkie sale dostepne w szkole ("<<sale.size()<<"):\n";
+    for(vec=0;vec<sale.size();vec++){
+        cout<<sale[vec]<<", ";
+    }
+    cout<<"\n";
+
     //EKSPORT DO JS
     nazwap = "plany.js";
     plik.open(nazwap,ios::out);
     lk=liczba_klas;
     if(plik.good()){
         //utworzenie zmiennych w JS
-        plik<<"const lk="<<lk<<",lg="<<lg<<",ld=10;\n";
+        plik<<"const lk="<<lk<<",lg="<<lg<<",ld=10,ls="<<sale.size()<<";\n";
         plik<<"let i,j;\n";
+        //plik<<"let sale = [];";
         //deklaracja tablicy w JS
         plik<<"let tab = [];\n";
         plik<<"for(i=0;i<=lk;i++){\n";
@@ -208,6 +244,12 @@ int main(){
             }
             plik<<"\n";
         }
+        plik<<"const sale = [";
+        for(vec=0;vec<sale.size()-1;vec++){
+            plik<<"\""<<sale[vec]<<"\",";
+        }
+        plik<<"\""<<sale[sale.size()-1]<<"\"];\n";
+        plik<<"let zajete = [];\n";
         plik.close();
     }
     else{
