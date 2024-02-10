@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Agata Majewska">
+    <title>Wolne sale</title>
+    <style>
+        h1{
+            text-align: center;
+        }
+        table,td,th{
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+    </style>
+</head>
+<body>
+    <h1>Wolne sale</h1>
+    <div id="plan lekcji">
+        <table id="tabela-plan">
+            <tr><th>Nr</th><th>Poniedziałek</th><th>Wtorek</th><th>Środa</th><th>Czwartek</th><th>Piątek</th></tr>
+        </table>
+    </div>
+    <script src="plany.js"></script>
+    <script>
+        let kk,kg,kd,ks; //kk = ktora klasa, kg = ktora godzina, kd = ktory dzien, ks = ktora sala
+        for(kg=0;kg<lg;kg++){
+            for(kd=0;kd<ld;kd++){
+                tab[0][kg][kd]="";
+            }
+        }
+        //document.getElementById("tabela-plan").innerHTML = "<tr><th>Nr</th><th>Poniedziałek</th><th>Wtorek</th><th>Środa</th><th>Czwartek</th><th>Piątek</th></tr>";
+        for(kg=0;kg<lg;kg++){
+            let wiersz = document.createElement("tr");
+            let naglowek = document.createElement("th");
+            naglowek.textContent = kg;
+            wiersz.appendChild(naglowek);
+            for(kd=0;kd<ld/2;kd++){
+                let element = document.createElement("td");
+                for(ks=0;ks<ls;ks++){
+                    zajete[ks]=0;
+                }
+                for(kk=1;kk<=lk;kk++){
+                    if(tab[kk][kg][kd]!=""){
+                        for(ks=0;ks<ls;ks++){
+                            if(tab[kk][kg][kd]==sale[ks]){
+                                zajete[ks]=1;
+                                break;
+                            }
+                            else if(tab[kk][kg][kd]<sale[ks]){
+                                break;
+                            }
+                        }
+                    }
+                }
+                for(kk=1;kk<=lk;kk++){
+                    for(ks=0;ks<ls;ks++){
+                        if(tab[kk][kg][kd+5]==sale[ks]){
+                            zajete[ks]=1;
+                            break;
+                        }
+                        else if(tab[kk][kg][kd+5]<sale[ks]){
+                            break;
+                        }
+                    }
+                }
+                for(ks=0;ks<ls;ks++){
+                    if(!zajete[ks]){
+                        tab[0][kg][kd] = tab[0][kg][kd]+sale[ks]+", ";
+                    }
+                }
+                element.textContent = tab[0][kg][kd];
+                wiersz.appendChild(element);
+            }
+            document.getElementById("tabela-plan").appendChild(wiersz);
+        }
+        
+    </script>
+</body>
+</html>
