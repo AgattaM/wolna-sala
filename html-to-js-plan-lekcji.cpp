@@ -13,7 +13,7 @@ class godzina{
 };
 int main(){
     //NAGLOWEK
-    cout<<"Program wymyslony i napisany przez Agate Majewska\n uczennice Zespolu Szkol Elektroniczno-Informatycznych im. Jana Szczepanika Lodz\n";
+    cout<<"Program wymyslony i napisany przez Agate Majewska\nuczennice Zespolu Szkol Elektroniczno-Informatycznych im. Jana Szczepanika Lodz\n";
     cout<<"Pierwsza wersja programu 9.02.2024\n\n";
     //ZMIENNE
     int liczba_klas,lg,lk; //liczba_klas = liczba klas w szkole, lg = najwieksza liczba godzin lekcyjnych
@@ -25,12 +25,12 @@ int main(){
     //PROGRAM
     //przypisanie wartosci zmiennym
     liczba_klas = 26;
-    lg = 14;
-    //cout<<"Ile planow lekcji chcesz zaladowac do programu?\n";
+    lg = 13;
+    //cout<<"Ile planow lekcji chcesz zaladowac do programu? (Podaj liczbę klas/oddzialow)\n";
     //cin>>liczba_klas;
-    //cout<<"Jaki numer ma najpozniejsza lekcja (jezeli jest lekcja 0 to dolicz jedna godzine)?\n";
+    //cout<<"Jaki numer ma najpozniejsza lekcja (jezeli jest lekcja 0 to dolicz jedna godzine)? (Podaj jaka jest najwieksza liczba godzin lekcyjnych jedengo dnia)\n";
     //cin>>lg;
-    godzina tab[30][15]; //tablica przechowujaca zapis sal z podzialem na klasy i godziny
+    godzina tab[50][20]; //tablica przechowujaca zapis sal z podzialem na klasy i godziny
     fstream plik; //strumien pliku
     while(kk<=liczba_klas){ //dopoki sa jeszcze nie wczytane pliki, wczytaj je
         //zerowanie zmiennych
@@ -211,14 +211,22 @@ int main(){
 
     //EKSPORT DO JS
     nazwap = "plany.js";
+    //cout<<"Podaj nazwe pliku do ktorego mam wyeksportowac dane: \n";
+    //cin>>nazwap;
     plik.open(nazwap,ios::out);
     lk=liczba_klas;
     if(plik.good()){
         //utworzenie zmiennych w JS
         plik<<"const lk="<<lk<<",lg="<<lg<<",ld=10,ls="<<sale.size()<<";\n";
-        plik<<"let i,j;\n";
-        //plik<<"let sale = [];";
-        //deklaracja tablicy w JS
+        //plik<<"let i,j;\n";
+        //wypisanie wszystkich numerow sal do tablicy js
+        plik<<"const sale = [";
+        for(vec=0;vec<sale.size()-1;vec++){
+            plik<<"\""<<sale[vec]<<"\",";
+        }
+        plik<<"\""<<sale[sale.size()-1]<<"\"];\n";
+        plik<<"let zajete = [];\n";
+        //deklaracja tablicy w JS zawierajacej wszystkie plany lekcji
         plik<<"let tab = [];\n";
         plik<<"for(i=0;i<=lk;i++){\n";
         plik<<"\ttab[i] = [];\n";
@@ -244,16 +252,13 @@ int main(){
             }
             plik<<"\n";
         }
-        plik<<"const sale = [";
-        for(vec=0;vec<sale.size()-1;vec++){
-            plik<<"\""<<sale[vec]<<"\",";
-        }
-        plik<<"\""<<sale[sale.size()-1]<<"\"];\n";
-        plik<<"let zajete = [];\n";
         plik.close();
+        cout<<"Zapisywanie danych do pliku zakonczone sukcesem.\n";
     }
     else{
         cout<<"Nie udalo sie otworzyc / utworzyc pliku "<<nazwap<<"\n";
     }
+    cout<<"\nAby zamknac program nacisnij enter.\n";
+    cin.get();
 return 0;
 }
