@@ -55,3 +55,4 @@ opcjonalnie również plik "README.txt", nie jest on wymagany do poprawnego dzia
 
 Miłego korzystania.
 Instrukcja napisana przez Agatę Majewską 28.02.2024 r.
+Nowe wersje programu dostępne są na tej stronie: https://github.com/AgattaM/wolna-sala
